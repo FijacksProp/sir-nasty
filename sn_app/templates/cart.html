@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shopping Cart - Sir Nasty Merch{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Cart Layout */
+    .cart-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .cart-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .cart-header h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .cart-header p {
+        color: #ccc;
+        font-size: 1.1rem;
+    }
+
+    /* Cart Items */
+    .cart-items {
+        margin-bottom: 3rem;
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        gap: 2rem;
+        align-items: center;
+        background: var(--dark-card);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(176, 38, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .cart-item:hover {
+        border-color: rgba(176, 38, 255, 0.4);
+        box-shadow: 0 0 20px rgba(176, 38, 255, 0.1);
+    }
+
+    .cart-item-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: rgba(176, 38, 255, 0.05);
+    }
+
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-item-details h3 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .cart-item-price {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--neon-purple);
+        margin-bottom: 1rem;
+    }
+
+    /* Quantity Controls */
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--neon-purple);
+        background: transparent;
+        color: var(--neon-purple);
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-btn:hover {
+        background: var(--neon-purple);
+        color: white;
+    }
+
+    .quantity-input {
+        width: 60px;
+        height: 40px;
+        text-align: center;
+        border: 2px solid rgba(176, 38, 255, 0.3);
+        border-radius: 0.5rem;
+        background: var(--dark-bg);
+        color: white;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    /* Remove Button */
+    .remove-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .remove-btn:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    /* Cart Summary */
+    .cart-summary {
+        background: var(--dark-card);
+        border-radius: 1rem;
+        padding: 2rem;
+        border: 1px solid rgba(176, 38, 255, 0.2);
+    }
+
+    .cart-summary h2 {
+        font-size: 1.75rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+        border-top: 2px solid var(--neon-purple);
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .summary-row.total {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--neon-purple);
+    }
+
+    .checkout-btn {
+        width: 100%;
+        background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 0.75rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .checkout-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .checkout-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .checkout-btn:hover {
+        box-shadow: 0 0 20px rgba(176, 38, 255, 0.4);
+        transform: translateY(-2px);
+    }
+
+    /* Empty Cart */
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .empty-cart h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .empty-cart p {
+        color: #ccc;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .shop-btn {
+        background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+        color: white;
+        text-decoration: none;
+        padding: 1rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .shop-btn:hover {
+        box-shadow: 0 0 20px rgba(176, 38, 255, 0.4);
+        transform: translateY(-2px);
+    }
+
+    /* Toast Notification */
+    .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease-out;
+        display: none;
+    }
+
+    .toast.active {
+        display: block;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .cart-item {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .cart-item-image {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="relative z-10 min-h-screen pt-32 pb-20">
+    <div class="container mx-auto px-6">
+        <div class="cart-container">
+
+            <!-- Cart Header -->
+            <div class="cart-header">
+                <h1>Shopping Cart</h1>
+                <p>Review your items and proceed to checkout</p>
+            </div>
+
+            {% if cart_items %}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- Cart Items -->
+                <div class="lg:col-span-2">
+                    <div class="cart-items">
+                        {% for item in cart_items %}
+                        <div class="cart-item">
+                            <!-- Product Image -->
+                            <div class="cart-item-image">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="cart-item-details">
+                                <h3>{{ item.product.name }}</h3>
+                                <div class="cart-item-price">${{ item.total_price }}</div>
+
+                                <!-- Quantity Controls -->
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="updateQuantity({{ item.product.id }}, {{ item.quantity|add:-1 }})">-</button>
+                                    <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="99" onchange="updateQuantity({{ item.product.id }}, this.value)">
+                                    <button class="quantity-btn" onclick="updateQuantity({{ item.product.id }}, {{ item.quantity|add:1 }})">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Remove Button -->
+                            <button class="remove-btn" onclick="removeItem({{ item.product.id }})">
+                                Remove
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="lg:col-span-1">
+                    <div class="cart-summary">
+                        <h2>Order Summary</h2>
+
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>${{ cart_total }}</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>${{ cart_total }}</span>
+                        </div>
+
+                        <a href="{% url 'checkout' %}" class="checkout-btn">
+                            Proceed to Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Empty Cart -->
+            <div class="empty-cart">
+                <div class="text-6xl mb-4">🛒</div>
+                <h2>Your cart is empty</h2>
+                <p>Add some products to get started!</p>
+                <a href="{% url 'shop' %}" class="shop-btn">Continue Shopping</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">
+    <span id="toastMessage"></span>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Get CSRF token for POST requests
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+// Update quantity
+function updateQuantity(productId, quantity) {
+    if (quantity < 1) quantity = 1;
+    if (quantity > 99) quantity = 99;
+
+    fetch(`/cart/update/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken
+        },
+        body: `quantity=${quantity}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload the page to show updated cart
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error updating cart', true);
+    });
+}
+
+// Remove item
+function removeItem(productId) {
+    fetch(`/cart/remove/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Reload the page to show updated cart
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error removing item', true);
+    });
+}
+
+// Show Toast Notification
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+
+    toastMessage.textContent = message;
+    toast.classList.add('active');
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('active');
+    }, 3000);
+}
+</script>
+{% endblock %}

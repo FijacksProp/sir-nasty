@@ -1,0 +1,964 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Official Whitepaper - Sir Nasty ($SN){% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Additional Whitepaper-Specific Styles */
+    
+    /* Document Container */
+    .document-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Section Spacing */
+    .whitepaper-section {
+        scroll-margin-top: 120px;
+    }
+    
+    /* TOC Sidebar Sticky */
+    .toc-sidebar {
+        position: sticky;
+        top: 100px;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+    }
+    
+    /* Custom Scrollbar for TOC */
+    .toc-sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .toc-sidebar::-webkit-scrollbar-track {
+        background: rgba(176, 38, 255, 0.1);
+    }
+    
+    .toc-sidebar::-webkit-scrollbar-thumb {
+        background: var(--neon-purple);
+        border-radius: 4px;
+    }
+    
+    /* TOC Link Styles */
+    .toc-link {
+        transition: all 0.3s ease;
+        position: relative;
+        padding-left: 1rem;
+    }
+    
+    .toc-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+        transition: height 0.3s ease;
+    }
+    
+    .toc-link.active::before {
+        height: 100%;
+    }
+    
+    .toc-link.active {
+        color: var(--neon-purple);
+    }
+    
+    /* Document Typography */
+    .document-content p {
+        line-height: 1.8;
+        margin-bottom: 1.25rem;
+    }
+    
+    .document-content ul, 
+    .document-content ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .document-content li {
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Info Card */
+    .info-card {
+        background: linear-gradient(135deg, rgba(176, 38, 255, 0.05), rgba(0, 212, 255, 0.05));
+        border-left: 3px solid var(--neon-purple);
+    }
+    
+    /* Warning Card */
+    .warning-card {
+        background: rgba(255, 152, 0, 0.05);
+        border-left: 3px solid #ff9800;
+    }
+    
+    /* Code/Address Display */
+    .code-display {
+        font-family: 'Courier New', monospace;
+        background: rgba(176, 38, 255, 0.1);
+        border: 1px solid rgba(176, 38, 255, 0.3);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        word-break: break-all;
+        font-size: 0.875rem;
+        position: relative;
+    }
+    
+    .copy-button {
+        transition: all 0.3s ease;
+    }
+    
+    .copy-button:hover {
+        background: var(--neon-purple);
+        transform: scale(1.05);
+    }
+    
+    /* Status Badge */
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .status-live {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+    }
+    
+    .status-progress {
+        background: rgba(255, 152, 0, 0.2);
+        color: #ff9800;
+        border: 1px solid #ff9800;
+    }
+    
+    .status-planned {
+        background: rgba(0, 212, 255, 0.2);
+        color: var(--neon-blue);
+        border: 1px solid var(--neon-blue);
+    }
+    
+    /* Grid Cards */
+    .grid-card {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .grid-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+    
+    .grid-card:hover::after {
+        transform: scaleX(1);
+    }
+    
+    /* Table Styles */
+    .pool-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        border-radius: 0.75rem;
+    }
+    
+    .pool-table th {
+        background: rgba(176, 38, 255, 0.15);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(176, 38, 255, 0.3);
+    }
+    
+    .pool-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(176, 38, 255, 0.1);
+    }
+    
+    .pool-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .pool-table tr:hover {
+        background: rgba(176, 38, 255, 0.05);
+    }
+    
+    /* Timeline */
+    .timeline-item {
+        position: relative;
+        padding-left: 2.5rem;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+        box-shadow: 0 0 10px var(--neon-purple);
+    }
+    
+    .timeline-item::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 1.5rem;
+        width: 2px;
+        height: calc(100% + 1rem);
+        background: linear-gradient(to bottom, var(--neon-purple), var(--neon-blue));
+        opacity: 0.3;
+    }
+    
+    .timeline-item:last-child::after {
+        display: none;
+    }
+    
+    /* Divider */
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--neon-purple), var(--neon-blue), transparent);
+        margin: 3rem 0;
+    }
+    
+    /* Mobile TOC */
+    @media (max-width: 1024px) {
+        .toc-sidebar {
+            position: static;
+            max-height: none;
+        }
+    }
+    
+    /* Icon Styles */
+    .icon-wrapper {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, rgba(176, 38, 255, 0.2), rgba(0, 212, 255, 0.2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    /* Disclaimer Box */
+    .disclaimer-box {
+        background: rgba(255, 152, 0, 0.05);
+        border: 1px solid rgba(255, 152, 0, 0.3);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+    }
+    
+    /* Hero Underline */
+    .hero-underline {
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+        margin: 2rem auto;
+        max-width: 400px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="relative z-10 min-h-screen">
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 slide-up">
+                    <span class="gradient-text">Sir Nasty ($SN)</span>
+                </h1>
+                <div class="flex flex-wrap items-center justify-center gap-4 text-gray-400 mb-4 slide-up delay-100">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Official Whitepaper
+                    </span>
+                    <span>•</span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                        Version 3.3
+                    </span>
+                    <span>•</span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        December 2025
+                    </span>
+                </div>
+                <a href="https://sirnastymeme.com" target="_blank" class="text-neon-purple hover:text-neon-blue transition-colors slide-up delay-200">
+                    sirnastymeme.com
+                </a>
+                <div class="hero-underline slide-up delay-300"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="pb-20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-12">
+                
+                <!-- Table of Contents (Desktop Sidebar) -->
+                <aside class="lg:w-64 flex-shrink-0 slide-up">
+                    <div class="toc-sidebar">
+                        <nav class="space-y-2">
+                            <h3 class="font-bold text-white mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                                Contents
+                            </h3>
+                            <a href="#abstract" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Abstract</a>
+                            <a href="#status" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Status</a>
+                            <a href="#ecosystem" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Ecosystem</a>
+                            <a href="#token" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Token</a>
+                            <a href="#staking" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Staking</a>
+                            <a href="#raydium" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Raydium</a>
+                            <a href="#dao" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">DAO</a>
+                            <a href="#transparency" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Transparency</a>
+                            <a href="#nfts" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">NFTs</a>
+                            <a href="#merch" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Merch</a>
+                            <a href="#roadmap" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Roadmap</a>
+                            <a href="#registry" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Registry</a>
+                            <a href="#disclaimer" class="toc-link block py-2 text-gray-400 hover:text-white text-sm">Disclaimer</a>
+                        </nav>
+                    </div>
+                </aside>
+
+                <!-- Document Content -->
+                <main class="flex-1 document-content slide-up delay-200">
+                    <div class="document-container">
+                        
+                        <!-- Abstract -->
+                        <section id="abstract" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Abstract</h2>
+                            <div class="info-card p-6 rounded-xl">
+                                <p class="text-gray-300 leading-relaxed">
+                                    Sir Nasty ($SN) is a Solana-native meme ecosystem combining on-chain staking, Raydium liquidity opportunities, DAO governance, NFTs in development, and real-world merchandise. The project is built for transparency, community ownership, and long-term sustainability.
+                                </p>
+                            </div>
+                        </section>
+
+                        <!-- Status -->
+                        <section id="status" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Current Status</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Staking Live -->
+                                <div class="neon-border rounded-xl p-6 grid-card">
+                                    <div class="flex items-start gap-4">
+                                        <div class="icon-wrapper flex-shrink-0">
+                                            <span>💎</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <h3 class="font-bold text-white">Staking Platform</h3>
+                                                <span class="status-badge status-live">Live</span>
+                                            </div>
+                                            <p class="text-gray-400 text-sm">
+                                                Staking is live on Solana mainnet with full on-chain functionality
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NFTs in Progress -->
+                                <div class="neon-border rounded-xl p-6 grid-card">
+                                    <div class="flex items-start gap-4">
+                                        <div class="icon-wrapper flex-shrink-0">
+                                            <span>🖼️</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <h3 class="font-bold text-white">NFT Collection</h3>
+                                                <span class="status-badge status-progress">In Progress</span>
+                                            </div>
+                                            <p class="text-gray-400 text-sm">
+                                                NFTs are in development and an artist search is currently active
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Merchandise -->
+                                <div class="neon-border rounded-xl p-6 grid-card">
+                                    <div class="flex items-start gap-4">
+                                        <div class="icon-wrapper flex-shrink-0">
+                                            <span>👕</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <h3 class="font-bold text-white">Merchandise</h3>
+                                                <span class="status-badge status-planned">March Launch</span>
+                                            </div>
+                                            <p class="text-gray-400 text-sm">
+                                                Merchandise is scheduled to launch no later than March
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Treasury Development -->
+                                <div class="neon-border rounded-xl p-6 grid-card">
+                                    <div class="flex items-start gap-4">
+                                        <div class="icon-wrapper flex-shrink-0">
+                                            <span>⚙️</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <h3 class="font-bold text-white">Treasury Logic</h3>
+                                                <span class="status-badge status-progress">Development</span>
+                                            </div>
+                                            <p class="text-gray-400 text-sm">
+                                                Treasury routing and holder distribution logic being written in Solana-native code
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Ecosystem Overview -->
+                        <section id="ecosystem" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Ecosystem Overview</h2>
+                            <p class="text-gray-300 mb-8 leading-relaxed">
+                                The Sir Nasty ecosystem is composed of multiple interconnected components designed to provide utility, rewards, and governance to the community.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- $SN Token -->
+                                <div class="neon-border rounded-xl p-6 grid-card hover:bg-gray-900/30 transition-all">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-3xl">👛</div>
+                                        <div>
+                                            <h3 class="font-bold text-white mb-2">$SN Token</h3>
+                                            <p class="text-gray-400 text-sm">Core ecosystem asset on Solana blockchain</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Staking dApp -->
+                                <div class="neon-border rounded-xl p-6 grid-card hover:bg-gray-900/30 transition-all">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-3xl">💎</div>
+                                        <div>
+                                            <h3 class="font-bold text-white mb-2">SN Staking dApp</h3>
+                                            <a href="https://stake.sirnastymeme.com" target="_blank" class="text-purple-400 hover:text-purple-300 text-sm">
+                                                stake.sirnastymeme.com →
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Raydium -->
+                                <div class="neon-border rounded-xl p-6 grid-card hover:bg-gray-900/30 transition-all">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-3xl">💧</div>
+                                        <div>
+                                            <h3 class="font-bold text-white mb-2">Raydium Liquidity & Farming</h3>
+                                            <p class="text-gray-400 text-sm">Optional liquidity provision opportunities</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DAO -->
+                                <div class="neon-border rounded-xl p-6 grid-card hover:bg-gray-900/30 transition-all">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-3xl">🏛️</div>
+                                        <div>
+                                            <h3 class="font-bold text-white mb-2">DAO Governance</h3>
+                                            <p class="text-gray-400 text-sm">Realms-based governance (CrewSN)</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NFTs -->
+                                <div class="neon-border rounded-xl p-6 grid-card hover:bg-gray-900/30 transition-all">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-3xl">🖼️</div>
+                                        <div>
+                                            <h3 class="font-bold text-white mb-2">NFT Collection</h3>
+                                            <p class="text-gray-400 text-sm">Exclusive collection in development</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Merchandise -->
+                                <div class="neon-border rounded-xl p-6 grid-card hover:bg-gray-900/30 transition-all">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-3xl">👕</div>
+                                        <div>
+                                            <h3 class="font-bold text-white mb-2">Merchandise</h3>
+                                            <p class="text-gray-400 text-sm">Premium branded products launching March</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Token -->
+                        <section id="token" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">$SN Token</h2>
+                            <p class="text-gray-300 mb-6 leading-relaxed">
+                                The $SN token is the core asset of the Sir Nasty ecosystem, built on the Solana blockchain for fast, low-cost transactions.
+                            </p>
+                            <div class="neon-border rounded-xl p-6 bg-gray-900/30">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-bold text-white">Mint Address</h3>
+                                    <button onclick="copyToClipboard('token-address')" class="copy-button px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-sm">
+                                        Copy
+                                    </button>
+                                </div>
+                                <div id="token-address" class="code-display">
+                                    3FDydrowEeGNwEnTxZj13cgMqKgmzw1ewEX3CHXtpump
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Staking -->
+                        <section id="staking" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Staking</h2>
+                            <div class="info-card p-6 rounded-xl mb-6">
+                                <p class="text-gray-300 leading-relaxed mb-4">
+                                    SN staking is implemented via an Anchor (Rust) smart contract on Solana. Users stake directly from their wallets using the dedicated staking dApp.
+                                </p>
+                                <p class="text-gray-300 leading-relaxed">
+                                    All staking operations—including deposits, rewards calculation, vault management, and claims—are handled fully on-chain, ensuring transparency and security.
+                                </p>
+                            </div>
+                            <a href="https://stake.sirnastymeme.com" target="_blank" class="cta-button inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white relative z-10">
+                                Access Staking Platform
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                            </a>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Raydium -->
+                        <section id="raydium" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Raydium Liquidity & Farming</h2>
+                            
+                            <div class="warning-card p-6 rounded-xl mb-6">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-2xl flex-shrink-0">⚠️</div>
+                                    <div>
+                                        <h4 class="font-bold text-orange-400 mb-2">Risk Warning</h4>
+                                        <p class="text-gray-300 text-sm leading-relaxed">
+                                            Liquidity providers may optionally supply SOL–SN liquidity on Raydium. This is separate from SN staking and involves impermanent loss risk. Only participate if you understand the risks associated with liquidity provision.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="pool-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Pool Type</th>
+                                            <th>Pool Address</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="font-semibold text-white">Main AMM Pool</td>
+                                            <td>
+                                                <div class="flex items-center justify-between gap-4">
+                                                    <code class="text-gray-300 text-sm break-all">5NSvdsB44t2jUdcdoXicEhYegRyqZmxKko9GynkvwnVP</code>
+                                                    <button onclick="copyToClipboard('pool-amm')" class="copy-button px-2 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs flex-shrink-0">
+                                                        Copy
+                                                    </button>
+                                                </div>
+                                                <span id="pool-amm" class="hidden">5NSvdsB44t2jUdcdoXicEhYegRyqZmxKko9GynkvwnVP</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-white">CLMM Pool (Farming)</td>
+                                            <td>
+                                                <div class="flex items-center justify-between gap-4">
+                                                    <code class="text-gray-300 text-sm break-all">AJGS55RS62RtLk66YhWsmJNq5sJwCyvtnrs4YVVgapBB</code>
+                                                    <button onclick="copyToClipboard('pool-clmm')" class="copy-button px-2 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs flex-shrink-0">
+                                                        Copy
+                                                    </button>
+                                                </div>
+                                                <span id="pool-clmm" class="hidden">AJGS55RS62RtLk66YhWsmJNq5sJwCyvtnrs4YVVgapBB</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- DAO & Governance -->
+                        <section id="dao" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">DAO & Governance</h2>
+                            <p class="text-gray-300 mb-8 leading-relaxed">
+                                Sir Nasty operates as a decentralized autonomous organization, giving token holders direct control over the project's direction and treasury management.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">DAO Platform</h4>
+                                    <p class="text-gray-400">Realms (Solana)</p>
+                                </div>
+                                
+                                <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">DAO Name</h4>
+                                    <p class="text-gray-400">CrewSN</p>
+                                </div>
+
+                                <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">DAO Interface</h4>
+                                    <p class="text-gray-400">https://app.realms.today/dao/CrewSN</p>
+                                </div>
+                                
+                                <!-- <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">Governance Token</h4>
+                                    <p class="text-gray-400">3FDydrowEeGNwEnTxZj13cgMqKgmzw1ewEX3CHXtpump</p>
+                                </div> -->
+                                
+                                <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">Voting Period</h4>
+                                    <p class="text-gray-400">5 days</p>
+                                </div>
+                                
+                                <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">Quorum</h4>
+                                    <p class="text-gray-400">25%</p>
+                                </div>
+                                
+                                <div class="neon-border rounded-xl p-6">
+                                    <h4 class="font-semibold text-white mb-2">Proposal Threshold</h4>
+                                    <p class="text-gray-400">100,000 CrewSN</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <a href="https://app.realms.today/dao/CrewSN" target="_blank" class="cta-button inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white relative z-10">
+                                    Visit DAO Interface
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Transparency -->
+                        <section id="transparency" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Transparency, Treasury & Funds Flow</h2>
+                            
+                            <div class="info-card p-6 rounded-xl mb-8">
+                                <p class="text-gray-300 leading-relaxed mb-4">
+                                    Transparency is a core principle of the Sir Nasty ecosystem. All revenue streams flow through the DAO treasury, ensuring community oversight and control.
+                                </p>
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Flow 1 -->
+                                <div class="neon-border rounded-xl p-6 flex items-center gap-4">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <div class="px-4 py-2 rounded-lg bg-purple-600/20 text-purple-300 font-semibold">
+                                            Platform Funds
+                                        </div>
+                                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                        </svg>
+                                        <div class="px-4 py-2 rounded-lg bg-blue-600/20 text-blue-300 font-semibold">
+                                            DAO Treasury
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Flow 2 -->
+                                <div class="neon-border rounded-xl p-6 flex items-center gap-4">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <div class="px-4 py-2 rounded-lg bg-purple-600/20 text-purple-300 font-semibold">
+                                            NFT Proceeds
+                                        </div>
+                                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                        </svg>
+                                        <div class="px-4 py-2 rounded-lg bg-blue-600/20 text-blue-300 font-semibold">
+                                            DAO Treasury
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Distribution Info -->
+                                <div class="warning-card p-6 rounded-xl">
+                                    <div class="flex items-start gap-4">
+                                        <div class="text-2xl flex-shrink-0">💰</div>
+                                        <div>
+                                            <h4 class="font-bold text-white mb-2">Holder Distribution</h4>
+                                            <p class="text-gray-300 text-sm leading-relaxed mb-2">
+                                                Target: 5% of designated revenue distributed to holders in SOL
+                                            </p>
+                                            <p class="text-gray-400 text-sm">
+                                                Distribution code currently being written on Solana to ensure fair and automated payouts.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- NFTs -->
+                        <section id="nfts" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">NFTs</h2>
+                            <div class="neon-border rounded-xl p-8 text-center">
+                                <div class="text-6xl mb-4">🖼️</div>
+                                <h3 class="text-xl font-bold text-white mb-4">Collection In Development</h3>
+                                <p class="text-gray-300 leading-relaxed max-w-2xl mx-auto mb-4">
+                                    The Sir Nasty NFT collection is currently in development. An artist search is active to ensure we deliver a premium, unique collection that aligns with our brand and provides genuine utility to holders.
+                                </p>
+                                <p class="text-gray-400 text-sm">
+                                    Utility and launch details will be announced once the collection is finalized.
+                                </p>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Merch -->
+                        <section id="merch" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Merchandise</h2>
+                            <div class="neon-border rounded-xl p-8">
+                                <div class="flex items-start gap-6">
+                                    <div class="text-6xl flex-shrink-0">👕</div>
+                                    <div class="flex-1">
+                                        <h3 class="text-xl font-bold text-white mb-4">Premium Branded Products</h3>
+                                        <p class="text-gray-300 leading-relaxed mb-4">
+                                            Merchandise is scheduled to launch no later than March. Our product line will feature high-quality, premium branded items that represent the Sir Nasty community.
+                                        </p>
+                                        <div class="flex items-center gap-2 mb-4">
+                                            <span class="status-badge status-planned">March Launch</span>
+                                        </div>
+                                        <a href="{% url 'shop' %}" target="_blank" class="text-purple-400 hover:text-purple-300 flex items-center gap-2">
+                                            Visit Shop
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Roadmap -->
+                        <section id="roadmap" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Roadmap</h2>
+                            <p class="text-gray-300 mb-8 leading-relaxed">
+                                Our development roadmap focuses on continuous improvement and expansion of the ecosystem.
+                            </p>
+                            
+                            <div class="space-y-6">
+                                <div class="timeline-item">
+                                    <div class="neon-border rounded-xl p-6">
+                                        <h4 class="font-bold text-white mb-2">Staking Reliability & Improvements</h4>
+                                        <p class="text-gray-400 text-sm">
+                                            Ongoing optimization of the staking platform for enhanced performance, user experience, and additional reward mechanisms.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="neon-border rounded-xl p-6">
+                                        <h4 class="font-bold text-white mb-2">DAO Governance Expansion</h4>
+                                        <p class="text-gray-400 text-sm">
+                                            Increasing community participation through improved governance mechanisms and expanded voting rights.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="neon-border rounded-xl p-6">
+                                        <h4 class="font-bold text-white mb-2">NFT Artist Onboarding</h4>
+                                        <p class="text-gray-400 text-sm">
+                                            Active search and selection process for premium artists to create our unique NFT collection.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="neon-border rounded-xl p-6">
+                                        <h4 class="font-bold text-white mb-2">Merch Launch by March</h4>
+                                        <p class="text-gray-400 text-sm">
+                                            Full merchandise store launch with premium branded products, scheduled for no later than March.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Public Registry -->
+                        <section id="registry" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Public Registry</h2>
+                            <p class="text-gray-300 mb-8 leading-relaxed">
+                                All critical smart contract addresses and program IDs for verification and transparency.
+                            </p>
+                            
+                            <div class="space-y-4">
+                                <!-- $SN Mint -->
+                                <div class="neon-border rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h4 class="font-bold text-white">$SN Mint</h4>
+                                        <button onclick="copyToClipboard('registry-mint')" class="copy-button px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-sm">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <div id="registry-mint" class="code-display">
+                                        3FDydrowEeGNwEnTxZj13cgMqKgmzw1ewEX3CHXtpump
+                                    </div>
+                                </div>
+
+                                <!-- Staking Program -->
+                                <div class="neon-border rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h4 class="font-bold text-white">Staking Program</h4>
+                                        <button onclick="copyToClipboard('registry-staking')" class="copy-button px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-sm">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <div id="registry-staking" class="code-display">
+                                        7b6oyKUq2CTZ1Kny5SuiacGJJsXR3tBpvTGV7vd3M7Ff
+                                    </div>
+                                </div>
+
+                                <!-- Pool PDA -->
+                                <div class="neon-border rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h4 class="font-bold text-white">Pool PDA</h4>
+                                        <button onclick="copyToClipboard('registry-pool')" class="copy-button px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-sm">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <div id="registry-pool" class="code-display">
+                                        BaGjfXrBL7iszB5mFB45rQJMkBawSs8fZ8QV76j712Yy
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Disclaimer -->
+                        <section id="disclaimer" class="whitepaper-section mb-16">
+                            <h2 class="text-3xl font-bold mb-6 gradient-text">Disclaimer</h2>
+                            <div class="disclaimer-box">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-2xl flex-shrink-0">⚠️</div>
+                                    <div>
+                                        <h4 class="font-bold text-orange-400 mb-3">Important Notice</h4>
+                                        <p class="text-gray-300 leading-relaxed mb-3">
+                                            This document is informational only and does not constitute financial, investment, legal, or tax advice. It is provided for general informational purposes and should not be relied upon as a substitute for professional advice.
+                                        </p>
+                                        <p class="text-gray-300 leading-relaxed">
+                                            Participation in cryptocurrency ecosystems carries inherent risks, including but not limited to market volatility, impermanent loss, smart contract vulnerabilities, and regulatory uncertainty. Always conduct your own research and consult with qualified professionals before making any investment decisions.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Active TOC link tracking
+    const sections = document.querySelectorAll('.whitepaper-section');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    
+    function updateActiveTOC() {
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (window.pageYOffset >= (sectionTop - 150)) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        tocLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active');
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', updateActiveTOC);
+    updateActiveTOC();
+    
+    // Copy to clipboard function
+    window.copyToClipboard = function(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent || element.innerText;
+        
+        navigator.clipboard.writeText(text).then(function() {
+            // Visual feedback
+            const button = event.target.closest('button');
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.classList.add('bg-green-600');
+            button.classList.remove('bg-purple-600');
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('bg-green-600');
+                button.classList.add('bg-purple-600');
+            }, 2000);
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
+    };
+});
+</script>
+{% endblock %}

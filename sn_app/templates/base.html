@@ -1,0 +1,748 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sir Nasty Meme{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Distinctive Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Sir Nasty Meme - Premium Web3 meme token ecosystem built on Solana. Stake, earn, and join the nastiest community in crypto.">
+    <meta name="keywords" content="crypto, meme token, solana, web3, staking, defi">
+    <meta property="og:title" content="Sir Nasty Meme - Premium Web3 Meme Token">
+    <meta property="og:description" content="The premium Web3 meme token ecosystem on Solana">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    
+    <style>
+        /* Global Font Settings */
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection Color */
+        ::selection {
+            background: rgba(176, 38, 255, 0.3);
+            color: white;
+        }
+
+        ::-moz-selection {
+            background: rgba(176, 38, 255, 0.3);
+            color: white;
+        }
+
+        /* Plexus Network Background */
+        #plexus-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        /* CSS Variables for Neon Theme */
+        :root {
+            --neon-purple: #b026ff;
+            --neon-blue: #00d4ff;
+            --dark-bg: #0a0a0f;
+            --dark-card: #14141f;
+            --text-primary: #ffffff;
+            --text-secondary: #a8a8b3;
+        }
+
+        /* Base Styles */
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .animated-bg::before,
+        .animated-bg::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .animated-bg::before {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
+            top: -250px;
+            left: -250px;
+            animation: float 25s ease-in-out infinite;
+        }
+
+        .animated-bg::after {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
+            bottom: -300px;
+            right: -300px;
+            animation: float 30s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(100px, -100px) scale(1.1); }
+            66% { transform: translate(-50px, 100px) scale(0.9); }
+        }
+
+        /* Neon Glow Text */
+        .neon-text {
+            text-shadow:
+                0 0 10px var(--neon-purple),
+                0 0 20px var(--neon-purple),
+                0 0 30px var(--neon-purple);
+        }
+
+        .neon-text-blue {
+            text-shadow:
+                0 0 10px var(--neon-blue),
+                0 0 20px var(--neon-blue),
+                0 0 30px var(--neon-blue);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Neon Border */
+        .neon-border {
+            border: 1px solid transparent;
+            background: linear-gradient(var(--dark-card), var(--dark-card)) padding-box,
+                        linear-gradient(135deg, var(--neon-purple), var(--neon-blue)) border-box;
+            transition: all 0.3s ease;
+        }
+
+        .neon-border:hover {
+            box-shadow:
+                0 0 20px rgba(176, 38, 255, 0.3),
+                0 0 40px rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-button:hover {
+            box-shadow:
+                0 0 30px rgba(176, 38, 255, 0.6),
+                0 0 60px rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Header Styles */
+        .header-sticky {
+            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 15, 0.85);
+            border-bottom: 1px solid rgba(176, 38, 255, 0.2);
+        }
+
+        /* Fade In Animation */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Slide Up Animation */
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stagger delays for multiple elements */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+
+        /* Card Hover Effect */
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Timeline Connector */
+        .timeline-line {
+            background: linear-gradient(to bottom, var(--neon-purple), var(--neon-blue));
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* Particle Container */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: particleFall 1s ease-out forwards;
+        }
+
+        @keyframes particleFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(50px) scale(0);
+            }
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: var(--dark-card);
+        }
+
+        .chart-container iframe {
+            border: none;
+            width: 100%;
+            min-height: 500px;
+        }
+
+        /* Social Icons Hover */
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px var(--neon-purple));
+        }
+
+        /* FAQ Accordion */
+        details {
+            border: 1px solid rgba(176, 38, 255, 0.2);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            background: var(--dark-card);
+            transition: all 0.3s ease;
+        }
+
+        details:hover {
+            border-color: rgba(176, 38, 255, 0.4);
+            box-shadow: 0 0 10px rgba(176, 38, 255, 0.1);
+        }
+
+        summary {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-primary);
+            list-style: none;
+            position: relative;
+        }
+
+        summary::after {
+            content: '+';
+            position: absolute;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: var(--neon-purple);
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary::after {
+            content: '−';
+            transform: rotate(0deg);
+        }
+
+        summary:hover {
+            background: rgba(176, 38, 255, 0.05);
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid rgba(176, 38, 255, 0.2);
+        }
+
+        details p {
+            padding: 1rem 1.5rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Tokenomics Chart */
+        #tokenomicsChart {
+            max-width: 100%;
+            height: 400px;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="antialiased">
+    <!-- Plexus Network Background -->
+    <canvas id="plexus-canvas"></canvas>
+
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Header / Navigation -->
+    {% block header %}
+    <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 fade-in">
+                        <img src="{{ logo.image.url }}" alt="Logo" class="w-12 h-12 rounded-lg">
+                    <span class="text-xl font-bold gradient-text">Sir Nasty Meme</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8 fade-in delay-100">
+                    <a href="/" class="text-white hover:text-purple-400 transition-colors">Home</a>
+                    <a href="{% url 'shop' %}" class="text-white hover:text-purple-400 transition-colors">Shop</a>
+                    <a href="#roadmap" class="text-white hover:text-purple-400 transition-colors">Roadmap</a>
+                    <a href="{% url 'whitepaper' %}" class="text-white hover:text-purple-400 transition-colors">Whitepaper</a>
+                    <a href="https://stake.sirnastymeme.com" class="text-white hover:text-purple-400 transition-colors" target="_blank">Staking</a>
+
+                    <!-- Cart Icon -->
+                    <a href="{% url 'cart_detail' %}" class="relative text-white hover:text-purple-400 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13l-1.1 5M7 13h10m0 0v8a2 2 0 01-2 2H9a2 2 0 01-2-2v-8z"></path>
+                        </svg>
+                        <span class="cart-count absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+                    </a>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="#buy" class="hidden md:block cta-button px-6 py-2.5 rounded-lg font-semibold text-white relative z-10 fade-in delay-200">
+                    Buy Token
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="md:hidden text-white focus:outline-none fade-in delay-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-gray-900 shadow-lg md:hidden z-50">
+            <div class="p-6">
+                <button id="mobile-menu-close" class="absolute top-4 right-4 text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <div class="mt-12 space-y-6">
+                    <a href="/" class="block text-white hover:text-purple-400 transition-colors">Home</a>
+                    <a href="{% url 'shop' %}" class="block text-white hover:text-purple-400 transition-colors">Shop</a>
+                    <a href="#roadmap" class="block text-white hover:text-purple-400 transition-colors">Roadmap</a>
+                    <a href="{% url 'whitepaper' %}" class="block text-white hover:text-purple-400 transition-colors">Whitepaper</a>
+                    <a href="https://stake.sirnastymeme.com" class="block text-white hover:text-purple-400 transition-colors" target="_blank">Staking</a>
+
+                    <!-- Cart Icon -->
+                    <a href="{% url 'cart_detail' %}" class="flex items-center space-x-2 text-white hover:text-purple-400 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13l-1.1 5M7 13h10m0 0v8a2 2 0 01-2 2H9a2 2 0 01-2-2v-8z"></path>
+                        </svg>
+                        <span>Cart</span>
+                        <span class="cart-count bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+                    </a>
+
+                    <a href="#buy" class="cta-button block px-6 py-2.5 rounded-lg font-semibold text-white text-center">
+                        Buy Token
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endblock %}
+
+    <!-- Main Content -->
+    <main class="relative z-10">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% block footer %}
+    <footer class="relative z-10 border-t border-gray-800 mt-20">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        {% if logo and logo.image %}
+                            <img src="{{ logo.image.url }}" alt="Logo" class="w-10 h-10 rounded-lg">
+                        {% else %}
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center">
+                                <span class="text-xl font-bold">SN</span>
+                            </div>
+                        {% endif %}
+                        <span class="text-lg font-bold gradient-text">Sir Nasty Meme</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        The premium Web3 meme token ecosystem on Solana.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="/" class="hover:text-purple-400 transition-colors">Home</a></li>
+                        <li><a href="/shop/" class="hover:text-purple-400 transition-colors">Shop</a></li>
+                        <li><a href="#roadmap" class="hover:text-purple-400 transition-colors">Roadmap</a></li>
+                        <li><a href="https://stake.sirnastymeme.com" class="hover:text-purple-400 transition-colors" target="_blank">Staking</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="{% url 'whitepaper' %}" class="hover:text-purple-400 transition-colors">Whitepaper</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Tokenomics</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Audit Report</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Brand Kit</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-colors">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Sir Nasty Meme LLC. All rights reserved.</p>
+                <p class="mt-2">Built on Solana. Made with 💜 by the community.</p>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+
+    {% block extra_js %}{% endblock %}
+
+    <!-- Mobile Menu and Particle Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const header = document.getElementById('header');
+
+            if (mobileMenuToggle && mobileMenu && mobileMenuClose && header) {
+                // Toggle mobile menu
+                mobileMenuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.add('active');
+                });
+
+                mobileMenuClose.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                });
+
+                // Sticky header on scroll
+                let lastScroll = 0;
+                window.addEventListener('scroll', function() {
+                    const currentScroll = window.pageYOffset;
+
+                    if (currentScroll > 100) {
+                        header.classList.add('header-sticky');
+                    } else {
+                        header.classList.remove('header-sticky');
+                    }
+
+                    lastScroll = currentScroll;
+                });
+            }
+
+            // Particle effect on click (optional, minimal implementation)
+            document.addEventListener('click', function(e) {
+                createParticles(e.clientX, e.clientY);
+            });
+
+            function createParticles(x, y) {
+                // Create 3-5 small particles
+                const particleCount = Math.floor(Math.random() * 3) + 3;
+
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+
+                    // Random color (purple or blue)
+                    const color = Math.random() > 0.5 ? '#b026ff' : '#00d4ff';
+                    particle.style.background = color;
+                    particle.style.boxShadow = `0 0 10px ${color}`;
+
+                    // Random position offset
+                    const offsetX = (Math.random() - 0.5) * 30;
+                    const offsetY = (Math.random() - 0.5) * 30;
+
+                    particle.style.left = (x + offsetX) + 'px';
+                    particle.style.top = (y + offsetY) + 'px';
+
+                    document.body.appendChild(particle);
+
+                    // Remove particle after animation
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 1000);
+                }
+            }
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#' && href !== '#buy') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Plexus Network Animation Script -->
+    <script>
+        class PlexusNetwork {
+            constructor() {
+                this.canvas = document.getElementById('plexus-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.nodes = [];
+                this.nodeCount = 50;
+                this.maxDistance = 150;
+                this.mouse = { x: null, y: null };
+
+                this.init();
+                this.animate();
+                this.addEventListeners();
+            }
+
+            init() {
+                this.resize();
+                this.createNodes();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createNodes() {
+                this.nodes = [];
+                for (let i = 0; i < this.nodeCount; i++) {
+                    this.nodes.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        size: Math.random() * 3 + 2,
+                        color: Math.random() > 0.5 ? '#b026ff' : '#00d4ff'
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Update and draw nodes
+                this.nodes.forEach(node => {
+                    this.updateNode(node);
+                    this.drawNode(node);
+                });
+
+                // Draw connections
+                this.drawConnections();
+
+                requestAnimationFrame(() => this.animate());
+            }
+
+            updateNode(node) {
+                node.x += node.vx;
+                node.y += node.vy;
+
+                // Bounce off edges
+                if (node.x < 0 || node.x > this.canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > this.canvas.height) node.vy *= -1;
+
+                // Mouse interaction
+                if (this.mouse.x && this.mouse.y) {
+                    const dx = this.mouse.x - node.x;
+                    const dy = this.mouse.y - node.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        node.x += dx * 0.01;
+                        node.y += dy * 0.01;
+                    }
+                }
+            }
+
+            drawNode(node) {
+                this.ctx.beginPath();
+                this.ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = node.color;
+                this.ctx.fill();
+
+                // Glow effect
+                this.ctx.shadowBlur = 15;
+                this.ctx.shadowColor = node.color;
+                this.ctx.fill();
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawConnections() {
+                for (let i = 0; i < this.nodes.length; i++) {
+                    for (let j = i + 1; j < this.nodes.length; j++) {
+                        const node1 = this.nodes[i];
+                        const node2 = this.nodes[j];
+                        const dx = node1.x - node2.x;
+                        const dy = node1.y - node2.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < this.maxDistance) {
+                            const opacity = (1 - distance / this.maxDistance) * 0.3;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(node1.x, node1.y);
+                            this.ctx.lineTo(node2.x, node2.y);
+                            this.ctx.strokeStyle = `rgba(176, 38, 255, ${opacity})`;
+                            this.ctx.lineWidth = 1;
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            addEventListeners() {
+                window.addEventListener('resize', () => this.resize());
+                window.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                });
+                window.addEventListener('mouseleave', () => {
+                    this.mouse.x = null;
+                    this.mouse.y = null;
+                });
+            }
+        }
+
+        // Initialize plexus network when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new PlexusNetwork();
+        });
+    </script>
+</body>
+</html>
